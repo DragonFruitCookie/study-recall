@@ -1,14 +1,12 @@
 "use client";
 
-import { useTransition } from "react";
-import { deleteTopic } from "@/app/actions";
 import type { TopicWithReviews } from "@/lib/db";
 import { formatDate } from "@/lib/dates";
 import { REVIEW_OFFSETS } from "@/lib/schedule";
 import { CategoryBadge } from "./CategoryBadge";
+import { DeleteTopicButton } from "./DeleteTopicButton";
 
 export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today: string }) {
-  const [pending, startTransition] = useTransition();
   if (topics.length === 0) return null;
 
   return (
@@ -28,15 +26,13 @@ export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today
                 <p className="text-xs text-dim">learned {formatDate(t.learned_on)}</p>
                 {t.notes && <p className="mt-1 text-xs whitespace-pre-wrap text-dim/80">{t.notes}</p>}
               </div>
-              <button
-                disabled={pending}
-                onClick={() => {
-                  if (confirm(`Delete “${t.name}” and all its reviews?`)) startTransition(() => deleteTopic(t.id));
-                }}
-                className="shrink-0 text-xs text-dim transition hover:text-coral disabled:opacity-40"
+              <DeleteTopicButton
+                id={t.id}
+                name={t.name}
+                triggerClassName="text-xs text-dim transition hover:text-coral focus-visible:text-coral disabled:opacity-40"
               >
                 delete
-              </button>
+              </DeleteTopicButton>
             </div>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {REVIEW_OFFSETS.map((_, i) => {

@@ -34,7 +34,7 @@ export function FreshToday({
               {t.learned_on !== today && (
                 <span className="shrink-0 text-xs text-dim">learned {formatDate(t.learned_on)}</span>
               )}
-              <DeleteTopicButton id={t.id} name={t.name} />
+              <DeleteTopicButton id={t.id} name={t.name} className="ml-auto" />
             </li>
           ))}
         </ul>

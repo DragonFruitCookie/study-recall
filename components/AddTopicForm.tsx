@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { addTopic } from "@/app/actions";
 
 const field =
@@ -8,7 +8,6 @@ const field =
 
 export function AddTopicForm({ today }: { today: string }) {
   const [error, action, pending] = useActionState(addTopic, null);
-  const [more, setMore] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const submitted = useRef(false);
 
@@ -16,7 +15,6 @@ export function AddTopicForm({ today }: { today: string }) {
   useEffect(() => {
     if (submitted.current && !pending && !error) {
       formRef.current?.reset();
-      setMore(false);
     }
     if (!pending) submitted.current = false;
   }, [pending, error]);
@@ -33,21 +31,18 @@ export function AddTopicForm({ today }: { today: string }) {
         <input name="learned_on" type="date" required defaultValue={today} max={today} className={`${field} sm:w-40`} />
       </div>
 
-      {more && (
-        <div className="mt-2 grid gap-2">
-          <input name="category" placeholder="Category (optional)" className={field} />
-          <textarea name="notes" placeholder="Notes (optional)" rows={2} className={`${field} resize-none`} />
-        </div>
-      )}
+      <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+        <input name="category" placeholder="Category" className={`${field} sm:w-40`} autoComplete="off" />
+        {/* Starts one line tall, grows with content */}
+        <textarea
+          name="notes"
+          placeholder="Notes"
+          rows={1}
+          className={`${field} max-h-32 min-h-[38px] resize-none field-sizing-content`}
+        />
+      </div>
 
-      <div className="mt-3 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => setMore((m) => !m)}
-          className="text-xs text-dim transition hover:text-fg"
-        >
-          {more ? "− fewer details" : "+ category & notes"}
-        </button>
+      <div className="mt-3 flex justify-end">
         <button
           disabled={pending}
           className="rounded-lg bg-violet/15 px-4 py-1.5 text-sm font-medium text-violet ring-1 ring-violet/30 transition hover:bg-violet/25 disabled:opacity-50"
