@@ -47,3 +47,13 @@ end $$;
 alter table topics  enable row level security;
 alter table reviews enable row level security;
 revoke execute on function create_topic_with_reviews from public, anon, authenticated;
+
+-- Standalone todo list (left column). Not related to topics/reviews.
+create table if not exists todos (
+  id           uuid primary key default gen_random_uuid(),
+  text         text not null check (length(trim(text)) > 0),
+  completed_at timestamptz, -- null = not done
+  created_at   timestamptz not null default now()
+);
+
+alter table todos enable row level security;

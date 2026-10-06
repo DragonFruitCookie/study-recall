@@ -10,8 +10,14 @@ scheduled from when you actually completed the previous one:
 | R3 | R2 completion date + 16 days |
 | R4 | R3 completion date + 35 days |
 
-The home screen is a todo list of **Backlog** (missed) and **Today**, plus a collapsible
-**Freshly Studied Today** list of topics logged today.
+The page has two columns:
+
+- **Left: Todo**, a plain, undated checklist. Separate from the review system (own
+  `todos` table, `lib/todos.ts`, `app/todoActions.ts`).
+- **Right: StudyRecall**: add topics, a collapsible **Studied Today** list (topics logged
+  today, with ✕ to delete), **Backlog** (missed) and **Today** reviews, and **All topics**.
+
+Categories show as colored badges; each category keeps the same muted color everywhere.
 
 Stack: Next.js (App Router, server actions) · TypeScript · Tailwind v4 · Supabase Postgres · Vercel.
 
@@ -27,6 +33,9 @@ Stack: Next.js (App Router, server actions) · TypeScript · Tailwind v4 · Supa
    `SUPABASE_SECRET_KEY` and `APP_TIMEZONE` (IANA name, e.g. `America/New_York`).
 5. `npm install && npm run dev` → http://localhost:3000
 6. `npm test` runs the date/scheduling unit tests.
+
+**Upgrading an existing database?** Run `supabase/migrations/002_todos.sql` in the SQL
+editor to add the todo table.
 
 **Upgrading from the fixed (+1/+7/+16/+35 from learned date) schedule?** Run
 `npm run reschedule -- --dry-run` to preview, then `npm run reschedule` to recompute

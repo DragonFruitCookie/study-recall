@@ -4,6 +4,7 @@ import { useOptimistic, useTransition } from "react";
 import { setReviewDone } from "@/app/actions";
 import type { Review } from "@/lib/buckets";
 import { daysBetween, formatDate } from "@/lib/dates";
+import { CategoryBadge } from "./CategoryBadge";
 
 const accents = {
   coral: { text: "text-coral", dot: "bg-coral", ring: "border-coral/60", fill: "bg-coral" },
@@ -77,11 +78,13 @@ export function ReviewList({
                     )}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className={`block truncate text-[15px] ${done ? "line-through decoration-dim" : ""}`}>
-                      {r.topic.name}
+                    <span className="flex items-center gap-2">
+                      <span className={`truncate text-[15px] ${done ? "line-through decoration-dim" : ""}`}>
+                        {r.topic.name}
+                      </span>
+                      {r.topic.category && <CategoryBadge category={r.topic.category} />}
                     </span>
                     <span className="mt-0.5 block text-xs text-dim">
-                      {r.topic.category && <>{r.topic.category} · </>}
                       {late > 0 ? `due ${formatDate(r.scheduled_on)} · ${late}d late` : "due today"}
                     </span>
                   </span>

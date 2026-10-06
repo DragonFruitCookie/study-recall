@@ -5,6 +5,7 @@ import { deleteTopic } from "@/app/actions";
 import type { TopicWithReviews } from "@/lib/db";
 import { formatDate } from "@/lib/dates";
 import { REVIEW_OFFSETS } from "@/lib/schedule";
+import { CategoryBadge } from "./CategoryBadge";
 
 export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today: string }) {
   const [pending, startTransition] = useTransition();
@@ -20,11 +21,11 @@ export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today
           <li key={t.id} className="px-4 py-3">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="truncate text-sm">{t.name}</p>
-                <p className="text-xs text-dim">
-                  learned {formatDate(t.learned_on)}
-                  {t.category && <> · {t.category}</>}
+                <p className="flex items-center gap-2">
+                  <span className="truncate text-sm">{t.name}</span>
+                  {t.category && <CategoryBadge category={t.category} />}
                 </p>
+                <p className="text-xs text-dim">learned {formatDate(t.learned_on)}</p>
                 {t.notes && <p className="mt-1 text-xs whitespace-pre-wrap text-dim/80">{t.notes}</p>}
               </div>
               <button
