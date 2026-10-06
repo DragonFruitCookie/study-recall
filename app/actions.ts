@@ -22,9 +22,16 @@ export async function addTopic(_prev: string | null, form: FormData): Promise<st
   return null;
 }
 
-export async function setReviewDone(id: string, done: boolean) {
-  await setReviewCompleted(id, done);
-  revalidatePath("/");
+/** Returns a user-facing error message, or null on success. */
+export async function setReviewDone(id: string, done: boolean): Promise<string | null> {
+  try {
+    await setReviewCompleted(id, done);
+  } catch (e) {
+    return e instanceof Error ? e.message : String(e);
+  } finally {
+    revalidatePath("/");
+  }
+  return null;
 }
 
 export async function deleteTopic(id: string) {

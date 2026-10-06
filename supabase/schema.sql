@@ -14,16 +14,17 @@ create table if not exists reviews (
   topic_id      uuid not null references topics(id) on delete cascade,
   review_number smallint not null check (review_number between 1 and 4),
   scheduled_on  date not null,
-  -- Completion state: null = not done. Kept separate from the schedule;
-  -- completing/unticking never touches scheduled_on.
+  -- Completion state: null = not done. A review row exists only once its date
+  -- is known (previous review completed); see lib/schedule.ts.
   completed_at  timestamptz,
   unique (topic_id, review_number) -- prevents duplicate reviews per topic
 );
 
 create index if not exists reviews_scheduled_on_idx on reviews (scheduled_on);
 
--- Creates a topic and its reviews atomically (no half-created topics).
--- Dates are computed by the app (lib/dates.ts) so offsets live in one place.
+-- Creates a topic and its initial review(s) atomically (no half-created topics).
+-- Dates are computed by the app (lib/schedule.ts) so the rules live in one place.
+-- Later reviews are inserted by the app as earlier ones are completed.
 create or replace function create_topic_with_reviews(
   p_name text, p_learned_on date, p_category text, p_notes text, p_dates date[]
 ) returns uuid language plpgsql as $$

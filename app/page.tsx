@@ -1,9 +1,10 @@
-import { appTimeZone, formatDate, todayInTz } from "@/lib/dates";
+import { appTimeZone, dateInTz, formatDate, todayInTz } from "@/lib/dates";
 import { bucketReviews } from "@/lib/buckets";
 import { fetchActiveReviews, fetchTopics, isDemo } from "@/lib/db";
 import { AddTopicForm } from "@/components/AddTopicForm";
 import { ReviewList } from "@/components/ReviewList";
 import { TopicList } from "@/components/TopicList";
+import { FreshToday } from "@/components/FreshToday";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export default async function Home() {
   const today = todayInTz(tz);
   const [active, topics] = await Promise.all([fetchActiveReviews(today), fetchTopics()]);
   const { backlog, today: todays } = bucketReviews(active, today, tz);
+  const freshToday = topics.filter((t) => dateInTz(new Date(t.created_at), tz) === today);
   const open = backlog.filter((r) => !r.completed_at).length + todays.filter((r) => !r.completed_at).length;
 
   return (
@@ -32,6 +34,7 @@ export default async function Home() {
         </p>
       )}
       <AddTopicForm today={today} />
+      <FreshToday topics={freshToday} today={today} />
 
       <div className="mt-10 space-y-10">
         {backlog.length > 0 && (

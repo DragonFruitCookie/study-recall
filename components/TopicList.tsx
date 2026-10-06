@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { deleteTopic } from "@/app/actions";
 import type { TopicWithReviews } from "@/lib/db";
 import { formatDate } from "@/lib/dates";
+import { REVIEW_OFFSETS } from "@/lib/schedule";
 
 export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today: string }) {
   const [pending, startTransition] = useTransition();
@@ -37,10 +38,18 @@ export function TopicList({ topics, today }: { topics: TopicWithReviews[]; today
               </button>
             </div>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {t.reviews.map((r) => {
+              {REVIEW_OFFSETS.map((_, i) => {
+                const r = t.reviews.find((r) => r.review_number === i + 1);
+                if (!r) {
+                  return (
+                    <span key={i} className="rounded-md border border-dashed border-line px-1.5 py-0.5 text-[11px] text-dim/60">
+                      R{i + 1} pending
+                    </span>
+                  );
+                }
                 const state = r.completed_at ? "text-mint border-mint/30" : r.scheduled_on < today ? "text-coral border-coral/30" : r.scheduled_on === today ? "text-amber border-amber/30" : "text-dim border-line";
                 return (
-                  <span key={r.review_number} className={`rounded-md border px-1.5 py-0.5 text-[11px] ${state}`}>
+                  <span key={i} className={`rounded-md border px-1.5 py-0.5 text-[11px] ${state}`}>
                     R{r.review_number} {formatDate(r.scheduled_on)}
                     {r.completed_at && " ✓"}
                   </span>

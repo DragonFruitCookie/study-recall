@@ -1,8 +1,6 @@
 // All "calendar dates" in the app are plain YYYY-MM-DD strings. They are never
 // converted to Date objects in local time, so they can't drift across timezones.
 
-export const REVIEW_OFFSETS = [1, 7, 16, 35] as const;
-
 export function appTimeZone(): string {
   return process.env.APP_TIMEZONE || "UTC";
 }
@@ -33,14 +31,6 @@ export function addDays(date: string, days: number): string {
   const d = new Date(`${date}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + days);
   return d.toISOString().slice(0, 10);
-}
-
-/** Review dates, always anchored to the original learned date. */
-export function reviewSchedule(learnedOn: string): { reviewNumber: number; scheduledOn: string }[] {
-  return REVIEW_OFFSETS.map((offset, i) => ({
-    reviewNumber: i + 1,
-    scheduledOn: addDays(learnedOn, offset),
-  }));
 }
 
 export function formatDate(date: string): string {

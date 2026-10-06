@@ -1,14 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { reviewSchedule, addDays, dateInTz, isValidDate } from "./dates.ts";
+import { addDays, dateInTz, isValidDate } from "./dates.ts";
 import { bucketReviews, type Review } from "./buckets.ts";
-
-test("schedule anchored to learned date", () => {
-  assert.deepEqual(
-    reviewSchedule("2026-09-01").map((r) => r.scheduledOn),
-    ["2026-09-02", "2026-09-08", "2026-09-17", "2026-10-06"],
-  );
-});
 
 test("addDays across month/year/leap boundaries", () => {
   assert.equal(addDays("2027-12-31", 1), "2028-01-01");

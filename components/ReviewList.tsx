@@ -60,7 +60,8 @@ export function ReviewList({
                       const next = e.target.checked;
                       startTransition(async () => {
                         toggle({ id: r.id, done: next });
-                        await setReviewDone(r.id, next);
+                        const error = await setReviewDone(r.id, next);
+                        if (error) alert(error);
                       });
                     }}
                   />
